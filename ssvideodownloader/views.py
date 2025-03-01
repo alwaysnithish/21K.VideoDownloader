@@ -16,7 +16,7 @@ def home(request):
     "merge_output_format": "mp4"  # Merge into a single MP4 file
                     }
                         # Bypass region restrictions# Public proxy (change if needed)# Fetch the best available format
-                    }
+                    
                     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                         info = ydl.extract_info(video_url, download=False)
 
