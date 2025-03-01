@@ -13,8 +13,7 @@ def home(request):
                 try:
                     ydl_opts = {
                         "format": "best",
-                        'proxy': 'socks5://51.159.67.222:1080', 
-                        'geo_bypass': True,  # Bypass region restrictions# Public proxy (change if needed)# Fetch the best available format
+                        # Bypass region restrictions# Public proxy (change if needed)# Fetch the best available format
                     }
                     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                         info = ydl.extract_info(video_url, download=False)
