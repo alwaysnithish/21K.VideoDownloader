@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: django-app
+    env: python
+    plan: free  # Change if using a paid plan
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn ssvideodownloader.wsgi:application"
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        value: "your_database_url_here"
