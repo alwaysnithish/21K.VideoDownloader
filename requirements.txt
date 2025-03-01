@@ -4,3 +4,4 @@ whitenoise==6.9.0
 psycopg2-binary==2.9.9  # Needed for PostgreSQL (if using PostgreSQL on Render)
 sqlparse==0.5.3
 requests==2.32.3
+yt-dlp==2025.2.19
