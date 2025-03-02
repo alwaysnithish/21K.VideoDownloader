@@ -12,37 +12,32 @@ def home(request):
             else:
                 try:
                     ydl_opts = {
-    "format": "bestvideo+bestaudio/best",  # Download both video & audio
-    "merge_output_format": "mp4",  # Merge into MP4 format
-    "postprocessors": [
-        {
-            "key": "FFmpegVideoConvertor",
-            "preferedformat": "mp4",
-        }
-    ],
+                        "format": "bv+ba/b",  # Best video + best audio, fallback to best
+                        "merge_output_format": "mp4",  # Ensure MP4 output
+                        "postprocessors": [
+                            {"key": "FFmpegMerger"},  # Merges video & audio
+                        ],
                     }
-                    
-                        # Bypass region restrictions# Public proxy (change if needed)# Fetch the best available format
-                    
+
                     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                         info = ydl.extract_info(video_url, download=False)
 
-                    # Extract downloadable MP4 formats
+                    # Extract merged MP4 formats (both video & audio)
                     mp4_formats = [
                         {
                             "url": fmt["url"],
                             "resolution": fmt.get("height", 0),  # Default to 0 if missing
                         }
                         for fmt in info.get("formats", [])
-                        if "url" in fmt and fmt["ext"] == "mp4"
+                        if "url" in fmt and fmt.get("vcodec") != "none" and fmt.get("acodec") != "none"  # Ensure both video & audio
                     ]
 
-                    # Sort resolutions (highest first), handling cases where "height" might be missing
-                    mp4_formats = sorted(mp4_formats, key=lambda x: int(x["resolution"]) if isinstance(x["resolution"], int) else 0, reverse=True)[:3]
+                    # Sort resolutions (highest first) and get **top 3 only**
+                    mp4_formats = sorted(mp4_formats, key=lambda x: x["resolution"], reverse=True)[:3]
 
                     context["title"] = info.get("title")
                     context["thumbnail"] = info.get("thumbnail")
-                    context["video_formats"] = mp4_formats  # Store MP4 download links
+                    context["video_formats"] = mp4_formats  # **Now always returns top 3**
 
                 except Exception as e:
                     context["error"] = f"Error: {str(e)}"
