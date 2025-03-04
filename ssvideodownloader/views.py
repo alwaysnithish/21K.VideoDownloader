@@ -1,5 +1,21 @@
 from django.shortcuts import render
 import yt_dlp
+import os
+
+# Define cookies file paths
+COOKIES_DIR = os.path.join(os.path.dirname(__file__), "..", "cookies")
+
+def get_cookies_file(url):
+    """Returns the appropriate cookies file for the platform."""
+    if "youtube.com" in url:
+        return os.path.join(COOKIES_DIR, "www.youtube.com_cookies.txt")
+    elif "instagram.com" in url:
+        return os.path.join(COOKIES_DIR, "www.instagram.com_cookies.txt")
+    elif "facebook.com" in url:
+        return os.path.join(COOKIES_DIR, "www.facebook.com_cookies.txt")
+    elif "x.com" in url or "twitter.com" in url:
+        return os.path.join(COOKIES_DIR, "x.com_cookies.txt")
+    return None  # No cookies file for unsupported platforms
 
 def home(request):
     context = {}
@@ -11,6 +27,9 @@ def home(request):
                 context["error"] = "URL is required"
             else:
                 try:
+                    # Get appropriate cookies file
+                    cookies_file = get_cookies_file(video_url)
+                    
                     ydl_opts = {
                         "format": "bv+ba/b",  # Best video + best audio, fallback to best
                         "merge_output_format": "mp4",  # Ensure MP4 output
@@ -18,6 +37,10 @@ def home(request):
                             {"key": "FFmpegMerger"},  # Merges video & audio
                         ],
                     }
+
+                    # Add cookies option if available
+                    if cookies_file and os.path.exists(cookies_file):
+                        ydl_opts["cookiefile"] = cookies_file
 
                     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                         info = ydl.extract_info(video_url, download=False)
