@@ -69,7 +69,7 @@
            {% csrf_token %}
            <input type="text" name="url" id="video-url" class="form-control" placeholder="Enter Video URL" required><br>
            {% if error %}
-               <p style="color: red;">Please Enter a valid URL or check your internet connection or may 21K.videodownloader has issues, Please try again later</p>
+               <p style="color: red;">Please Enter a valid URL or check your internet connection or may 21K.videodownloader has issues, Please try again later {{ error }}</p>
            {% endif %}
            
            <!-- BUTTON WITH LOADER -->
