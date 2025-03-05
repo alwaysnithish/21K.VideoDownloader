@@ -1,76 +1,72 @@
-import os
-import yt_dlp
+
+
 from django.shortcuts import render
-from django.http import FileResponse, HttpResponse
+import yt_dlp
+import os
 
-# Define the directory to store downloaded videos
-DOWNLOAD_DIR = os.path.join(os.getcwd(), "downloads")
+#Define cookies file paths
 
-if not os.path.exists(DOWNLOAD_DIR):
-    os.makedirs(DOWNLOAD_DIR)
+COOKIES_DIR = os.path.join(os.path.dirname(file), "..", "cookies")
+
+def get_cookies_file(url):
+"""Returns the appropriate cookies file for the platform."""
+if "youtube.com" in url:
+return os.path.join(COOKIES_DIR, "www.youtube.com_cookies.txt")
+elif "instagram.com" in url:
+return os.path.join(COOKIES_DIR, "www.instagram.com_cookies.txt")
+elif "facebook.com" in url:
+return os.path.join(COOKIES_DIR, "www.facebook.com_cookies.txt")
+elif "x.com" in url or "twitter.com" in url:
+return os.path.join(COOKIES_DIR, "x.com_cookies.txt")
+return None  # No cookies file for unsupported platforms
 
 def home(request):
-    video_info = None
-    error_message = None
+context = {}
 
-    if request.method == "POST":
-        video_url = request.POST.get("video_url")
+if request.method == "POST":  
+    if "fetch_info" in request.POST:  
+        video_url = request.POST.get("url")  
+        if not video_url:  
+            context["error"] = "URL is required"  
+        else:  
+            try:  
+                # Get appropriate cookies file  
+                cookies_file = get_cookies_file(video_url)  
+                  
+                ydl_opts = {  
+                    "format": "bv+ba/b",  # Best video + best audio, fallback to best  
+                    "merge_output_format": "mp4",  # Ensure MP4 output  
+                    "postprocessors": [  
+                        {"key": "FFmpegMerger"},  # Merges video & audio  
+                    ],  
+                }  
 
-        if not video_url:
-            error_message = "Please enter a video URL."
-        else:
-            try:
-                ydl_opts = {
-                    "quiet": True,
-                    "skip_download": True,
-                    "force_generic_extractor": False,
-                }
+                # Add cookies option if available  
+                if cookies_file and os.path.exists(cookies_file):  
+                    ydl_opts["cookiefile"] = cookies_file  
 
-                with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                    info = ydl.extract_info(video_url, download=False)
-                    
-                    # Extract title, thumbnail, and available formats
-                    video_info = {
-                        "title": info.get("title"),
-                        "thumbnail": info.get("thumbnail"),
-                        "formats": [
-                            {
-                                "format_id": fmt["format_id"],
-                                "extension": fmt["ext"],
-                                "resolution": fmt.get("resolution", fmt.get("height", "Audio Only")),
-                                "filesize": fmt.get("filesize", "N/A"),
-                            }
-                            for fmt in info["formats"]
-                        ],
-                        "video_id": info.get("id"),
-                        "url": video_url,  # Store the original URL
-                    }
+                with yt_dlp.YoutubeDL(ydl_opts) as ydl:  
+                    info = ydl.extract_info(video_url, download=False)  
 
-            except Exception as e:
-                error_message = f"Error fetching video details: {str(e)}"
+                # Extract merged MP4 formats (both video & audio)  
+                mp4_formats = [  
+                    {  
+                        "url": fmt["url"],  
+                        "resolution": fmt.get("height", 0),  # Default to 0 if missing  
+                    }  
+                    for fmt in info.get("formats", [])  
+                    if "url" in fmt and fmt.get("vcodec") != "none" and fmt.get("acodec") != "none"  # Ensure both video & audio  
+                ]  
 
-    return render(request, "home.html", {"video_info": video_info, "error_message": error_message})
+                # Sort resolutions (highest first) and get **top 3 only**  
+                mp4_formats = sorted(mp4_formats, key=lambda x: x["resolution"], reverse=True)[:3]  
 
-def download_video(request, video_id, format_id):
-    video_url = request.GET.get("url")  # Get original video URL
+                context["title"] = info.get("title")  
+                context["thumbnail"] = info.get("thumbnail")  
+                context["video_formats"] = mp4_formats  # **Now always returns top 3**  
 
-    if not video_url:
-        return HttpResponse("Missing video URL.", status=400)
+            except Exception as e:  
+                context["error"] = f"Error: {str(e)}"  
 
-    file_path = os.path.join(DOWNLOAD_DIR, f"{video_id}_{format_id}.mp4")
+return render(request, "download.html", context)
 
-    ydl_opts = {
-        "format": format_id,
-        "outtmpl": file_path,
-        "quiet": True,
-        "merge_output_format": "mp4",  # Ensure merged output format
-    }
-
-    try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([video_url])
-
-        return FileResponse(open(file_path, "rb"), as_attachment=True, filename=f"{video_id}_{format_id}.mp4")
-
-    except Exception as e:
-        return HttpResponse(f"Error downloading video: {str(e)}", status=500)
