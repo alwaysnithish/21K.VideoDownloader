@@ -1,72 +1,43 @@
-
-
 from django.shortcuts import render
 import yt_dlp
 import os
 
-#Define cookies file paths
+# Define the download directory
+DOWNLOAD_DIR = os.path.join(os.path.dirname(__file__), "..", "downloads")
 
-COOKIES_DIR = os.path.join(os.path.dirname(file), "..", "cookies")
-
-def get_cookies_file(url):
-"""Returns the appropriate cookies file for the platform."""
-if "youtube.com" in url:
-return os.path.join(COOKIES_DIR, "www.youtube.com_cookies.txt")
-elif "instagram.com" in url:
-return os.path.join(COOKIES_DIR, "www.instagram.com_cookies.txt")
-elif "facebook.com" in url:
-return os.path.join(COOKIES_DIR, "www.facebook.com_cookies.txt")
-elif "x.com" in url or "twitter.com" in url:
-return os.path.join(COOKIES_DIR, "x.com_cookies.txt")
-return None  # No cookies file for unsupported platforms
+# Ensure the directory exists
+os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
 def home(request):
-context = {}
+    context = {}
 
-if request.method == "POST":  
-    if "fetch_info" in request.POST:  
-        video_url = request.POST.get("url")  
-        if not video_url:  
-            context["error"] = "URL is required"  
-        else:  
-            try:  
-                # Get appropriate cookies file  
-                cookies_file = get_cookies_file(video_url)  
-                  
-                ydl_opts = {  
-                    "format": "bv+ba/b",  # Best video + best audio, fallback to best  
-                    "merge_output_format": "mp4",  # Ensure MP4 output  
-                    "postprocessors": [  
-                        {"key": "FFmpegMerger"},  # Merges video & audio  
-                    ],  
-                }  
+    if request.method == "POST":
+        if "fetch_info" in request.POST:
+            video_url = request.POST.get("url")
+            if not video_url:
+                context["error"] = "URL is required"
+            else:
+                try:
+                    ydl_opts = {
+                        "format": "bv*+ba/b",  # Best video + best audio
+                        "merge_output_format": "mp4",  # Ensure MP4 output
+                        "outtmpl": os.path.join(DOWNLOAD_DIR, "%(title)s.%(ext)s"),  # Save in the downloads directory
+                        "postprocessors": [
+                            {"key": "FFmpegMerger"},  # Merges video & audio
+                        ],
+                    }
 
-                # Add cookies option if available  
-                if cookies_file and os.path.exists(cookies_file):  
-                    ydl_opts["cookiefile"] = cookies_file  
+                    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                        info = ydl.extract_info(video_url, download=True)  # Download the video
 
-                with yt_dlp.YoutubeDL(ydl_opts) as ydl:  
-                    info = ydl.extract_info(video_url, download=False)  
+                    # Get the downloaded file path
+                    downloaded_file = os.path.join(DOWNLOAD_DIR, f"{info['title']}.mp4")
 
-                # Extract merged MP4 formats (both video & audio)  
-                mp4_formats = [  
-                    {  
-                        "url": fmt["url"],  
-                        "resolution": fmt.get("height", 0),  # Default to 0 if missing  
-                    }  
-                    for fmt in info.get("formats", [])  
-                    if "url" in fmt and fmt.get("vcodec") != "none" and fmt.get("acodec") != "none"  # Ensure both video & audio  
-                ]  
+                    context["title"] = info.get("title")
+                    context["thumbnail"] = info.get("thumbnail")
+                    context["download_path"] = downloaded_file  # Store the download path
 
-                # Sort resolutions (highest first) and get **top 3 only**  
-                mp4_formats = sorted(mp4_formats, key=lambda x: x["resolution"], reverse=True)[:3]  
+                except Exception as e:
+                    context["error"] = f"Error: {str(e)}"
 
-                context["title"] = info.get("title")  
-                context["thumbnail"] = info.get("thumbnail")  
-                context["video_formats"] = mp4_formats  # **Now always returns top 3**  
-
-            except Exception as e:  
-                context["error"] = f"Error: {str(e)}"  
-
-return render(request, "download.html", context)
-
+    return render(request, "download.html", context)
