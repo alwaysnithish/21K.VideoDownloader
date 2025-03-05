@@ -2,7 +2,7 @@ from django.shortcuts import render
 import yt_dlp
 import os
 
-# Define cookies file paths
+# Define cookies file paths relative to the project root
 COOKIES_DIR = os.path.join(os.path.dirname(__file__), "..", "cookies")
 
 def get_cookies_file(url):
@@ -18,20 +18,26 @@ def get_cookies_file(url):
     else:
         path = None  # No cookies file for unsupported platforms
 
-    print(f"🔍 [DEBUG] Using cookies file: {path}")  # Log the detected file
+    print(f"🔍 [DEBUG] Using cookies file: {path}")
     return path
 
 def home(request):
-    video_url = request.GET.get("url")
-    
-    if not video_url:
-        return render(request, "download.html", {"error": "URL is required"})
+    """Handles video URL input and checks cookies file existence."""
+    if request.method == "POST":
+        video_url = request.POST.get("url")  # Get URL from POST data
 
-    cookies_file = get_cookies_file(video_url)  # Get cookies file for the platform
+        if not video_url:
+            return render(request, "download.html", {"error": "URL is required"})
 
-    if cookies_file and os.path.exists(cookies_file):
-        print(f"✅ [DEBUG] Cookies file found: {cookies_file}")
-    else:
-        print(f"❌ [DEBUG] Cookies file NOT FOUND at: {cookies_file}")
+        cookies_file = get_cookies_file(video_url)  # Determine cookies file
 
-    return render(request, "download.html", {"message": "Check Render logs for cookies path"})
+        if cookies_file and os.path.exists(cookies_file):
+            print(f"✅ [DEBUG] Cookies file found: {cookies_file}")
+        else:
+            print(f"❌ [DEBUG] Cookies file NOT FOUND at: {cookies_file}")
+
+        # Render a page to show debug message
+        return render(request, "download.html", {"message": "Check Render logs for cookies path"})
+
+    # For GET requests, simply render the download page
+    return render(request, "download.html")
