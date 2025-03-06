@@ -27,7 +27,12 @@ SECRET_KEY = 'django-insecure-k60)4_v)nctk=zr@h6yawqki(+3ul9zme_7ts01p-e$w)nnww$
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+import os
 
+
+# Production setting
+if not DEBUG:
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Application definition
 
