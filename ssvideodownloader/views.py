@@ -1,10 +1,18 @@
-import os
-import yt_dlp
 from django.shortcuts import render
+import yt_dlp
+import os
+import re
 
-# Define & Ensure the downloads directory exists
-DOWNLOAD_DIR = os.path.join(os.path.dirname(__file__), "..", "downloads")
-os.makedirs(DOWNLOAD_DIR, exist_ok=True)
+# Define the downloads directory relative to the project root
+DOWNLOAD_DIR = os.path.join(os.path.dirname(__file__), "..", "Download")
+os.makedirs(DOWNLOAD_DIR, exist_ok=True)  # Ensure it exists
+
+def sanitize_filename(filename):
+    """
+    Remove characters that are invalid in filenames.
+    This helps prevent errors when saving files.
+    """
+    return re.sub(r'[<>:"/\\|?*]', '', filename)
 
 def home(request):
     context = {}
@@ -16,21 +24,27 @@ def home(request):
         else:
             try:
                 ydl_opts = {
-                    "format": "bv*+ba/b",  # Best video + best audio
-                    "merge_output_format": "mp4",
-                    "outtmpl": os.path.join(DOWNLOAD_DIR, "%(title)s.%(ext)s"),
-                    "postprocessors": [{"key": "FFmpegMerger"}],  # Merge video & audio
+                    "format": "bv*+ba/b",  # Best video + best audio, fallback to best
+                    "merge_output_format": "mp4",  # Ensure MP4 output
+                    # Use a sanitized title for the output filename
+                    "outtmpl": os.path.join(DOWNLOAD_DIR, sanitize_filename("%(title)s") + ".%(ext)s"),
+                    "postprocessors": [
+                        {"key": "FFmpegMerger"},  # Merge video and audio streams
+                    ],
                 }
-
-                # Ensure downloads directory exists every time
-                os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                     info = ydl.extract_info(video_url, download=True)
 
-                context["title"] = info.get("title")
+                # Build the final filename using the sanitized title
+                title = info.get("title", "output")
+                sanitized_title = sanitize_filename(title)
+                filename = f"{sanitized_title}.mp4"
+                file_path = os.path.join(DOWNLOAD_DIR, filename)
+
+                context["title"] = title
                 context["thumbnail"] = info.get("thumbnail")
-                context["download_link"] = f"/downloads/{info['title']}.mp4"
+                context["download_link"] = f"/downloads/{filename}"  # This URL must be served via Django's static or media settings
 
             except Exception as e:
                 context["error"] = f"Error: {str(e)}"
