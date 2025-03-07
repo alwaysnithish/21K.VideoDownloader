@@ -8,8 +8,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
-    path('/privacypolicy',views.pp,name='privacypolicy'),
-    path('/termsandconditions',views.tc,name='termsandconditions'),
+    path('privacypolicy/',views.pp,name='privacypolicy'),
+    path('termsandconditions/',views.tc,name='termsandconditions'),
 
     # Serve ads.txt
     re_path(r'^ads\.txt$', serve, {'document_root': settings.STATIC_ROOT, 'path': 'ads.txt'}),
