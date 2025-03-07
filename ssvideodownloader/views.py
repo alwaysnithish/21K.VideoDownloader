@@ -43,3 +43,8 @@ def home(request):
                     context["error"] = f"Error: {str(e)}"
 
     return render(request, "download.html", context)
+def privacypolicy(request):
+    return render(request, "privacypolicy.html")
+def termsandconditions(request):
+    return render(request, "termsandconditions.html")
+    
