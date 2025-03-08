@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><link rel="icon" type="image/x-icon" href="{% static 'android-chrome-512x51.png' %}"><meta name="google-site-verification" content="0pCE10Yrcc9YsIh7T1wtLB6ZUzVwwoxOQ0SEEVdXCDQ" />
-  
+<head>
+    {% load static %}  <!-- Load static files -->
+    <link rel="icon" type="image/x-icon" href="{% static 'android-chrome-512x51.png' %}">
+    <meta name="google-site-verification" content="0pCE10Yrcc9YsIh7T1wtLB6ZUzVwwoxOQ0SEEVdXCDQ" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Terms and Conditions - 21K.VideoDownloader</title>
@@ -26,9 +28,16 @@
             font-weight: bold;
             font-size: 1.5rem;
         }
-        .navbar-brand img { max-height: 45px; width: auto; margin-right: 10px; }
-        .navbar-brand h1 { color:#1e3c72 ; font-size: 21.5px; margin: 0; }
-        
+        .navbar-brand img {
+            max-height: 45px;
+            width: auto;
+            margin-right: 10px;
+        }
+        .navbar-brand h1 {
+            color: #1e3c72;
+            font-size: 21.5px;
+            margin: 0;
+        }
         .nav-link {
             color: blue !important;
             font-weight: 500;
@@ -62,34 +71,31 @@
             margin-bottom: 15px;
         }
         .footer {
-            background-color:#1e3c71;
+            background-color: #1e3c71;
             padding: 20px;
-            height:px;
             text-align: center;
             margin-top: 40px;
             border-top: 0px solid #ddd;
         }
         .footer a {
-            
             text-decoration: none;
-            color:white;
+            color: white;
         }
         .footer a:hover {
             color: white;
         }
         .social-icons {
-        margin-top: 20px;
-        color:white;
-        
+            margin-top: 20px;
+            color: white;
         }
         .social-icons a {
-        margin: 0 10px;
-        color: white; /* Default icon color */
-        font-size: 17px; /* Icon size */
-        transition: color 0.3s ease;
+            margin: 0 10px;
+            color: white;
+            font-size: 17px;
+            transition: color 0.3s ease;
         }
         .social-icons a:hover {
-        color:white; /* Icon color on hover */
+            color: white;
         }
     </style>
 </head>
@@ -98,7 +104,7 @@
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container-fluid">
             <a class="navbar-brand mx-auto" href="#">
-                <img src="{% staic 'android-chrome-512x51.png' %}" alt="21K.VideoDownloader" height="45px" width="45px"class="img-fluid">
+                <img src="{% static 'android-chrome-512x51.png' %}" alt="21K.VideoDownloader" height="45px" width="45px" class="img-fluid">
                 <h1>21K.VideoDownloader</h1>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -147,38 +153,32 @@
         <h2>7. Changes to These Terms</h2>
         <p>We may update these Terms and Conditions from time to time. Any changes will be posted on this page with an updated revision date. Your continued use of our service constitutes acceptance of the revised terms.</p>
 
-        
         <h2>8. Contact Us</h2>
-        <p>If you have any questions or concerns about these Terms and Conditions, please contact/Direct Message us at Twitter/𝕏 . Link avalable in below footer links named as 'Contact Us'</p>
+        <p>If you have any questions or concerns about these Terms and Conditions, please contact/Direct Message us at Twitter/𝕏. Link available in the footer below, named as 'Contact Us'.</p>
     </div>
 
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-   
-   
-   <!-- Footer -->
-   <footer class="footer">
-   
-   <h6 style="color:red">Follow us on :</h6>
-   <p><div class="social-icons">
-   <i class="fab fa-facebook"></i><a href="https://facebook.com/21KViDownloader" target="">Facebook</a> <br>
-   <i class="fab fa-twitter"></i><a href="https://twitter.com/21KViDownloader" target="">Twitter/𝕏</a><br> 
-   <i class="fab fa-instagram"></i><a href="https://instagram.com/21KViDownloader" target="">Instagram</a></br>
-   <i class="fab fa-youtube"></i> <a href="https://youtube.com/@21KViDownloader" target="">YouTube</a><br>
-   
-   
-   </div></p>
-   <h6 style="color:red">Quick links</h6>
-   <p><a href="https://videodownloader-21k.onrender.com/Aboutus">About us</a> <br>
-   <a href="https://x.com/@21kvidownloader">Contact us</a> <br>
-   <a href="https://videodownloader-21k.onrender.com/privacypolicy">Privacy Policy</a> <br>
-   <a href="https://videodownloader-21k.onrender.com/termsandconditions">Terms & Conditions</a>
-   </p>
-   
-   <br>
-   <p style="color:white;margin-bottom:0px;">&copy; 2025 21K.VideoDownloader. All Rights Reserved.</p>
-   
-   </footer>
+    <!-- Footer -->
+    <footer class="footer">
+        <h6 style="color: red;">Follow us on:</h6>
+        <div class="social-icons">
+            <i class="fab fa-facebook"></i><a href="https://facebook.com/21KViDownloader" target="_blank">Facebook</a><br>
+            <i class="fab fa-twitter"></i><a href="https://twitter.com/21KViDownloader" target="_blank">Twitter/𝕏</a><br>
+            <i class="fab fa-instagram"></i><a href="https://instagram.com/21KViDownloader" target="_blank">Instagram</a><br>
+            <i class="fab fa-youtube"></i><a href="https://youtube.com/@21KViDownloader" target="_blank">YouTube</a><br>
+        </div>
+        <h6 style="color: red;">Quick links</h6>
+        <p>
+            <a href="https://videodownloader-21k.onrender.com/Aboutus">About us</a><br>
+            <a href="https://x.com/@21kvidownloader">Contact us</a><br>
+            <a href="https://videodownloader-21k.onrender.com/privacypolicy">Privacy Policy</a><br>
+            <a href="https://videodownloader-21k.onrender.com/termsandconditions">Terms & Conditions</a>
+        </p>
+        <br>
+        <p style="color: white; margin-bottom: 0px;">&copy; 2025 21K.VideoDownloader. All Rights Reserved.</p>
+    </footer>
 
+    <!-- Scripts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
