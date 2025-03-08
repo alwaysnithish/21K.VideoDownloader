@@ -12,6 +12,11 @@ def home(request):
                 context["error"] = "URL is required"
             else:
                 try:
+                    # Check if the URL is from a supported platform
+                    if not any(platform in video_url for platform in ["youtube.com", "youtu.be", "twitter.com", "x.com", "instagram.com", "facebook.com"]):
+                        context["error"] = "Unsupported URL. Supported platforms: YouTube, Twitter, Instagram, Facebook."
+                        return render(request, "download.html", context)
+
                     # Determine the platform based on the URL
                     if "youtube.com" in video_url or "youtu.be" in video_url:
                         cookies_file = os.path.join("cookies", "www.youtube.com_cookies.txt")
@@ -23,6 +28,9 @@ def home(request):
                         cookies_file = os.path.join("cookies", "www.facebook.com_cookies.txt")
                     else:
                         cookies_file = None
+
+                    # Debugging: Print cookies file path
+                    print(f"Cookies file: {cookies_file}")
 
                     ydl_opts = {
                         # Request best video and best audio separately
@@ -43,6 +51,9 @@ def home(request):
                     # Add cookies file to options if it exists
                     if cookies_file and os.path.exists(cookies_file):
                         ydl_opts["cookiefile"] = cookies_file
+                        print("Cookies file found and added to ydl_opts.")
+                    else:
+                        print("Cookies file not found or not provided.")
 
                     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                         info = ydl.extract_info(video_url, download=False)
@@ -64,13 +75,18 @@ def home(request):
                     context["thumbnail"] = info.get("thumbnail")
                     context["video_formats"] = mp4_formats  # Now always returns top 3
 
+                except yt_dlp.utils.DownloadError as e:
+                    context["error"] = f"Download Error: {str(e)}"
+                except yt_dlp.utils.ExtractorError as e:
+                    context["error"] = f"Extraction Error: {str(e)}"
                 except Exception as e:
-                    context["error"] = f"Error: {str(e)}"
+                    context["error"] = f"An unexpected error occurred: {str(e)}"
 
     return render(request, "download.html", context)
 
 def privacypolicy(request):
     return render(request, "privacypolicy.html")
+
 def aboutus(request):
     return render(request, "aboutus.html")
 
