@@ -14,15 +14,15 @@ def home(request):
                 try:
                     # Determine the platform based on the URL
                     if "youtube.com" in video_url or "youtu.be" in video_url:
-                        browser = "chrome"  # Use Chrome for YouTube cookies
+                        cookies_file = os.path.join("cookies", "www.youtube.com_cookies.txt")
                     elif "twitter.com" in video_url or "x.com" in video_url:
-                        browser = "chrome"  # Use Chrome for Twitter/X cookies
+                        cookies_file = os.path.join("cookies", "www.x.com_cookies.txt")
                     elif "instagram.com" in video_url:
-                        browser = "chrome"  # Use Chrome for Instagram cookies
+                        cookies_file = os.path.join("cookies", "www.instagram.com_cookies.txt")
                     elif "facebook.com" in video_url:
-                        browser = "chrome"  # Use Chrome for Facebook cookies
+                        cookies_file = os.path.join("cookies", "www.facebook.com_cookies.txt")
                     else:
-                        browser = None
+                        cookies_file = None
 
                     ydl_opts = {
                         # Request best video and best audio separately
@@ -40,10 +40,9 @@ def home(request):
                         ],
                     }
 
-                    # Add cookies-from-browser option if a browser is specified
-                    if browser:
-                        ydl_opts["cookiesfrombrowser"] = (browser,)
-                        print(f"Using cookies from {browser} browser.")
+                    # Add cookies file to options if it exists
+                    if cookies_file and os.path.exists(cookies_file):
+                        ydl_opts["cookiefile"] = cookies_file
 
                     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                         info = ydl.extract_info(video_url, download=False)
@@ -65,18 +64,13 @@ def home(request):
                     context["thumbnail"] = info.get("thumbnail")
                     context["video_formats"] = mp4_formats  # Now always returns top 3
 
-                except yt_dlp.utils.DownloadError as e:
-                    context["error"] = f"Download Error: {str(e)}"
-                except yt_dlp.utils.ExtractorError as e:
-                    context["error"] = f"Extraction Error: {str(e)}"
                 except Exception as e:
-                    context["error"] = f"An unexpected error occurred: {str(e)}"
+                    context["error"] = f"Error: {str(e)}"
 
     return render(request, "download.html", context)
 
 def privacypolicy(request):
     return render(request, "privacypolicy.html")
-
 def aboutus(request):
     return render(request, "aboutus.html")
 
