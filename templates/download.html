@@ -228,6 +228,127 @@
             {% endif %}
         </div>
     </div>
+     <style>
+   
+   .container21 {
+   max-width: 800px;
+   margin: auto;
+   background: white;
+   padding: 15px;
+   border-radius: 10px;
+   box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.1);
+   }
+   h2{
+   color: purple;
+   text-align: left;
+   }
+   h3 {
+   color:blue;
+   text-align: left;
+   }
+   b{
+   color:indigo;
+   }
+   p {
+   line-height: 1.6;
+   }
+   .steps {
+   padding: 10px;
+   background-image:linear-gradient(white,white);
+   border-radius: 5px;
+   color:black;
+   }
+   .steps li {
+   margin-bottom: 35px;
+   }
+   .faq {
+   margin-top: 30px;
+   }
+   .faq-item {
+   border-bottom: 1px solid #ddd;
+   padding: 10px;
+   }
+   .faq-question {
+   font-weight: bold;
+   cursor: pointer;
+   color: #007bff;
+   }
+   .faq-answer {
+   display: none;
+   padding: 10px 0;
+   }
+   </style>
+   
+   
+   
+   <div class="container21">
+   <h2 style="color:purple;">How to Download Videos?</h2>
+   <p style="color:indigo;">Downloading videos from various platforms like YouTube, Instagram, and Twitter is simple using our tool. Just follow the steps below.</p>
+   
+   <h3>Step-by-Step Guide to Download Videos</h3>
+   <ol class="steps">
+   <li><strong>Find the Video:</strong> Open the platform (YouTube, Instagram, Twitter, etc.) and <b>copy the URL of the video</b> you want to download.</li>
+   <li><strong>Paste the URL:</strong> Go to our website and paste the copied <b>video link into the input box</b> on the homepage.</li>
+   <li><strong>Click the Download Button:</strong> Press the <b>"Download"</b> button to start processing the video.</li>
+   <li><strong>Choose Quality:</strong> After processing, our system will show different <b>video resolutions</b> (e.g., 1080p, 720p, 480p). Select the desired quality.</li>
+   <li><strong>Download the Video:</strong> Click on the preferred video format and resolution. The <b>download will start automatically</b>.</li>
+   <li><strong>Save & Enjoy:</strong> Once downloaded, the video will be saved to your device, and you can watch it anytime offline.</li>
+   </ol>
+   
+   <h2 class="faq">Frequently Asked Questions (FAQ)</h2>
+   <p>Here are some common questions users ask about downloading videos.</p>
+   
+   <div class="faq-item">
+   <div class="faq-question">Is it legal to download videos from YouTube or Instagram?</div>
+   <div class="faq-answer">Downloading videos for <b>personal use</b> is generally allowed. However, using copyrighted videos for <b>commercial purposes or redistribution</b> without permission may violate copyright laws. Always ensure you have the right to download and use a video.</div>
+   </div>
+   
+   <div class="faq-item">
+   <div class="faq-question">Can I download private or restricted videos?</div>
+   <div class="faq-answer">No, our tool only allows downloading <b>public videos</b> that do not require a login. Private videos, paid content, and age-restricted videos <b>cannot be downloaded</b> using our service.</div>
+   </div>
+   
+   <div class="faq-item">
+   <div class="faq-question">Why is my video not downloading?</div>
+   <div class="faq-answer">This may be due to various reasons:<br>
+   - The <b>video link is incorrect</b> or broken.<br>
+   - The <b>video is restricted</b> by the platform.<br>
+   - The platform has <b>updated its security settings</b> to block downloads.<br>
+   Try again with a valid <b>public video URL</b>.
+   - <b>May Our site has issues. Try with different Social Medias URL</b></div>
+   </div>
+   
+   <div class="faq-item">
+   <div class="faq-question">What video formats and resolutions are available?</div>
+   <div class="faq-answer">Our downloader supports videos in <b>MP4 format</b> with resolutions like:<br>
+   - <b>Full HD (1080p)</b> – Best quality, large file size.<br>
+   - <b>HD (720p)</b> – Good quality, moderate file size.<br>
+   - <b>SD (480p, 360p)</b> – Lower quality, small file size.<br>
+   Choose the best option depending on your needs.</div>
+   </div>
+   
+   <div class="faq-item">
+   <div class="faq-question">Can I download audio only?</div>
+   <div class="faq-answer">No! Our tool do not allows you to download videos as <b>MP3 audio files</b>.</div>
+   </div>
+   
+   <div class="faq-item">
+   <div class="faq-question">Will the downloaded videos expire?</div>
+   <div class="faq-answer">No, once downloaded, the video is saved <b>permanently</b> on your device unless you delete it manually.</div>
+   </div>
+   </div>
+   
+   <script>
+   // FAQ Toggle Script
+   document.querySelectorAll('.faq-question').forEach(item => {
+   item.addEventListener('click', () => {
+   let answer = item.nextElementSibling;
+   answer.style.display = (answer.style.display === 'block') ? 'none' : 'block';
+   });
+   });
+   </script>
+   
+   
 
     <!-- Footer -->
     <footer class="footer">
