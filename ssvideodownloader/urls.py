@@ -14,5 +14,6 @@ urlpatterns = [
     path('termsandconditions/',views.termsandconditions,name='termsandconditions'),
 
     # Serve ads.txt
+    re_path(r'^sitemap\.xml$', serve, {'document_root': settings.STATIC_ROOT, 'path': 'sitemap.xml'}),
     re_path(r'^ads\.txt$', serve, {'document_root': settings.STATIC_ROOT, 'path': 'ads.txt'}),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
