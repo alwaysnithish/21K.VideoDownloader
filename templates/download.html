@@ -192,7 +192,7 @@
             {% csrf_token %}
             <input type="text" name="url" id="video-url" class="form-control" placeholder="Enter Video URL" required><br>
             {% if error %}
-                <p style="color: red;">{{ error }}</p>
+                <p style="color: red;">something went wrong. Please try again later</p>
             {% endif %}
             <button type="submit" name="fetch_info" class="btn btn-primary download-btn" id="fetch-btn">
                 <span id="fetch-text">Download Video</span>
